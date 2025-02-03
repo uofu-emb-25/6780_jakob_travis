@@ -22,8 +22,9 @@ int lab1_main(void) {
     while (1) {
         HAL_Delay(200); // Delay 200ms
         // Toggle the output state of both PC8 and PC9
-        if (GPIOA->IDR & 0x1){
-        //if(My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0)) {
+        //if (GPIOA->IDR & 0x1){
+        int check = My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0);
+        if(check) {
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7);
         }
     
