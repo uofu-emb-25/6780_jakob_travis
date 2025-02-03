@@ -23,9 +23,7 @@ int lab1_main(void) {
 
     while (1) {
         HAL_Delay(200); // Delay 200ms
-        // Toggle the output state of both PC8 and PC9
-        //if (GPIOA->IDR & 0x1)
-        //debouncer = (debouncer << 1);
+
         int button_check = My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0);
         debouncer = (debouncer << 1) | (button_check & 0x01);
         
@@ -33,8 +31,8 @@ int lab1_main(void) {
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7); // Toggle LEDs
 
             
-            while (My_HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)); // Wait until button is released
-            debouncer = 0; // Reset debouncer after release
+            while (My_HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
+            debouncer = 0;
         }
         }
         HAL_Delay(10);
