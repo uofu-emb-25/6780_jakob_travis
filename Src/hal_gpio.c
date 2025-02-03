@@ -10,7 +10,7 @@ void My_HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
     GPIOC -> OSPEEDR |= 0b00000000000000000000;
     GPIOC -> PUPDR |= 0b00000000000000000000;
     GPIOA -> OSPEEDR |= 0b00;
-    GPIOA -> PUPDR |= 0b00;
+    GPIOA -> PUPDR |= 0b10;
 
 
 }
@@ -29,13 +29,24 @@ GPIO_PinState My_HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
 
 
-void My_HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState)
+void My_HAL_GPIO_WritePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, int PinState)
 {
+    if (PinState == 1){
+        GPIOx->ODR |= GPIO_Pin;
+    }
+    if (PinState == 0){
+        GPIOx->ODR &= ~(GPIO_Pin);
+    }
 }
 
 
 
 void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 {
+    GPIOx->ODR ^= GPIO_Pin;
 }
 
+void My_HAL_RCC_GPIOC_CLK_ENABLE(void){
+    RCC->AHBENR |= (1<<19);
+    RCC->AHBENR |= (1<<17);
+}
