@@ -24,10 +24,14 @@ int lab2_main(void) {
 
     SYSCFG_Initialization();
     assert(((SYSCFG->EXTICR[0]) == 0));
+
+    NVIC_EnableIRQ(EXTI0_1_IRQn);
+    NVIC_SetPriority(EXTI0_1_IRQn,1);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
+    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+
 
 
 
@@ -45,4 +49,9 @@ int lab2_main(void) {
 
     }
     
+}
+
+void EXTI0_1_IRQHandler(void){
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9);
+    EXTI -> PR |= 0b1;
 }
