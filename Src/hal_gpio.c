@@ -50,3 +50,13 @@ void My_HAL_RCC_GPIOC_CLK_ENABLE(void){
     RCC->AHBENR |= (1<<19);
     RCC->AHBENR |= (1<<17);
 }
+
+void EXTI_rising_button_toggle(void){
+    EXTI->IMR |= 0b1;
+    EXTI -> RTSR |= 0b1;
+}
+
+void SYSCFG_Initialization(void){
+    RCC->APB2ENR |= 0b1;
+    SYSCFG -> EXTICR[0] |= 0b000; //setting to PA0
+}

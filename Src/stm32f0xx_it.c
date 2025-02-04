@@ -70,10 +70,16 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+volatile counter = 0;
 void SysTick_Handler(void)
 {
-    HAL_IncTick();
-}
+  HAL_IncTick();
+    if (counter == 200){
+      My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+      counter = 0;
+      }
+    counter++;
+};
 
 /******************************************************************************/
 /*                 STM32F0xx Peripherals Interrupt Handlers                   */

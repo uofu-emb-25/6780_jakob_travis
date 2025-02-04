@@ -25,16 +25,10 @@ int lab1_main(void) {
         HAL_Delay(200); // Delay 200ms
 
         int button_check = My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0);
-        debouncer = (debouncer << 1) | (button_check & 0x01);
-        
-        if (debouncer == 0x7FFFFFFF) {
+        if (button_check){
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7); // Toggle LEDs
+        }
 
-            
-            while (My_HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-            debouncer = 0;
-        }
-        }
-        HAL_Delay(10);
-    
     }
+    
+}
