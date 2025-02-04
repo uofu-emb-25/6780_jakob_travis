@@ -51,7 +51,15 @@ int lab2_main(void) {
     
 }
 
+volatile icounter = 0;
 void EXTI0_1_IRQHandler(void){
+    if (icounter == 1){
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9);
+    }
+    if (icounter == 1500000){
     My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9);
-    EXTI -> PR |= 0b1;
+    EXTI -> PR |= 0x1;
+    icounter = 0;
+    }
+    icounter++;
 }
