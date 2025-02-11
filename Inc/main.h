@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <hal_gpio.h>
 
 void SystemClock_Config(void);
 void TIM2_UEV_Interrupt_Setup(void);

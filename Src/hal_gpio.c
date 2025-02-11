@@ -62,11 +62,33 @@ void SYSCFG_Initialization(void){
 }
 
 void TIM2_UEV_Interrupt_Setup(void){
-    RCC->APB1ENR |= 0b11;
+    RCC->APB1ENR |= 0b1;
     TIM2->PSC = 7999; //7999 in Hex
-    TIM2->ARR = 250; //ARR is 250
+    TIM2->ARR = 1500; //ARR is 1500
     TIM2->DIER |= 0b1; //Update interrupt enable!
-    TIM2->CR1 |= 0b1; // enabled the CEN (counter enable)
+    TIM2->CR1 |= 0b1; // turning timer on.
+
+
+
+    //SYSCFG->ITLINE16 Timer 2 Interrupt Status Register
+    //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt
+}
+
+void TIM3_UEV_Interrupt_Setup(void){
+    RCC->APB1ENR |= (1<<1);
+    TIM3->PSC = 1250; //7999 in Hex
+    TIM3->ARR = 25; //ARR is 250
+    TIM3->DIER |= 0b1; //Update interrupt enable!
+    TIM3->CCMR1 &= ~0b11; //setting CCMR1 Channel 1 and 2 to output
+    TIM3 ->CCMR1 &= ~((1<<9)|(1<<8));
+    TIM3 ->CCMR2 &= ~0b11; //setting CCMR2 Channel 3 and 4 to output
+    TIM3 ->CCMR2 &= ~((1<<9)|(1<<8));
+    TIM3 ->CCMR1 |= ((1<<4)|(1<<5)|(1<<6)); //setting the Outpare Compare Mode to PWM Mode 2
+    TIM3 ->CCMR1 |= ((1<<14)|(1<<13)); //setting the Output Compare Mode to PWM MOde 1
+    TIM3 ->CCMR1 &= ~(1<<12);
+    TIM3 ->CCMR1 |= ((1<<11)|(1<<3));
+    
+
 
 
 
