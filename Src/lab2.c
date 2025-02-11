@@ -42,11 +42,11 @@ int lab2_main(void) {
         HAL_Delay(600); // Delay 200ms
         SysTick_Handler();
 
-        //int button_check = My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0);
+        int button_check = My_HAL_GPIO_ReadPin(GPIOA ,GPIO_PIN_0);
         
-        //if (button_check) {
-        //    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7); // Toggle LEDs
-        //}
+        if (button_check) {
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7); // Toggle LEDs
+        }
 
     }
     
