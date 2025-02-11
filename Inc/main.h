@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 void SystemClock_Config(void);
+void TIM2_UEV_Interrupt_Setup(void);
 
 int lab1_main(void);
 int lab2_main(void);

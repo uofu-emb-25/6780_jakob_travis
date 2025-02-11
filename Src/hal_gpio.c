@@ -60,3 +60,16 @@ void SYSCFG_Initialization(void){
     RCC->APB2ENR |= 0b1;
     SYSCFG -> EXTICR[0] |= 0b000; //setting to PA0
 }
+
+void TIM2_UEV_Interrupt_Setup(void){
+    RCC->APB1ENR |= 0b11;
+    TIM2->PSC = 7999; //7999 in Hex
+    TIM2->ARR = 250; //ARR is 250
+    TIM2->DIER |= 0b1; //Update interrupt enable!
+    TIM2->CR1 |= 0b1; // enabled the CEN (counter enable)
+
+
+
+    //SYSCFG->ITLINE16 Timer 2 Interrupt Status Register
+    //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt
+}
