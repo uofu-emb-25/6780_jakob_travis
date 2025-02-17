@@ -4,6 +4,8 @@
 
 void SystemClock_Config(void);
 void TIM2_UEV_Interrupt_Setup(void);
+void AF_init_lab3(void);
+void TIM3_UEV_Setup(void);
 
 int lab1_main(void);
 int lab2_main(void);
