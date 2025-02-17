@@ -12,6 +12,7 @@ int lab3_main(void) {
     //HAL_GPIO_Init(GPIOC, &initStr);
     My_HAL_GPIO_Init(GPIOC, &initStr);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
+    AF_init_lab3();
     TIM2_UEV_Interrupt_Setup();
     NVIC_EnableIRQ(TIM2_IRQn);
     NVIC_SetPriority(TIM2_IRQn,1);
