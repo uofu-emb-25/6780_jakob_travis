@@ -11,6 +11,8 @@ void My_HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
     GPIOC -> PUPDR |= 0b00000000000000000000;
     GPIOA -> OSPEEDR |= 0b00;
     GPIOA -> PUPDR |= 0b10;
+    GPIOC -> AFR[0] &= ~((1<<27)|(1<<26)|(1<<25)|(1<<24)); //setting AF0 t0 GPIOC Pin 6 and 7
+    GPIOC -> AFR[0] &= ~((1<<31)|(1<<30)|(1<<29)|(1<<28));
 
 
 }
@@ -87,8 +89,16 @@ void TIM3_UEV_Interrupt_Setup(void){
     TIM3 ->CCMR1 |= ((1<<14)|(1<<13)); //setting the Output Compare Mode to PWM MOde 1
     TIM3 ->CCMR1 &= ~(1<<12);
     TIM3 ->CCMR1 |= ((1<<11)|(1<<3));
-    
+    TIM3 -> CCER |= 0b10001; //enabling capture/compare enable register
+    TIM3 -> CCR1 = 5;
+    TIM3 -> CCR2 = 5;
+}
 
+void AF_init_lab3(void){
+    GPIOC -> MODER |= 0b1111000000000000;
+    GPIOC -> AFR[0] &= ~((1<<27)|(1<<26)|(1<<25)|(1<<24)); //setting AF0 t0 GPIOC Pin 6 and 7
+    GPIOC -> AFR[0] &= ~((1<<31)|(1<<30)|(1<<29)|(1<<28));
+}
 
 
 

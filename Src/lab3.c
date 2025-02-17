@@ -15,6 +15,7 @@ int lab3_main(void) {
     TIM2_UEV_Interrupt_Setup();
     NVIC_EnableIRQ(TIM2_IRQn);
     NVIC_SetPriority(TIM2_IRQn,1);
+
     while(1){
 
     }
