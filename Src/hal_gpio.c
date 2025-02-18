@@ -112,8 +112,18 @@ void init_UART3_PC10_PC11_PC12(void){
 }
 
 void USART3_int(void){
-    RCC->APB1ENR |= (1<<18) //Setting USART3 high in RCC reg
+    RCC->APB1ENR |= (1<<18); //Setting USART3 high in RCC reg
     USART3 -> BRR = 416; //Baud div of 416 with clock of 4.8MHz for 115240
     USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
     USART3 -> CR1 |= 0b1; //enabling USART
 }
+
+void ASCII_write_USART3(character){
+    USART3->TDR |= (character |= 0xFF);
+}
+
+void Transmit_USART3(char* string_array){
+    for (int i = 0; string_array[i] != '/0'; i++){
+        ASCII_write_USART3(string_array[i]);//writing the character to the transmit register
+        };
+};

@@ -15,13 +15,23 @@ int lab4_main(void) {
     //My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
     init_UART3_PC10_PC11(); //PC 10 is TX, PC11 is RX
     //AF_init_lab3();
-    TIM2_UEV_Interrupt_Setup();
-    TIM3_UEV_Setup();
-    AF_init_lab3();
-    NVIC_EnableIRQ(TIM2_IRQn);
-    NVIC_SetPriority(TIM2_IRQn,3);
+    //TIM2_UEV_Interrupt_Setup();
+    //TIM3_UEV_Setup();
+    //AF_init_lab3();
+    //NVIC_EnableIRQ(TIM2_IRQn);
+    //NVIC_SetPriority(TIM2_IRQn,3);
+    volatile char message;
+    volatile char character;
+    //while((USART3->ISR) & (1<<7)){ //while the Transmit Data register is full
 
-    while(1){
+    //}
+    while(~(USART3->ISR & (1<<5))){ //while the Read Data register is not empty
+        char character = (USART3->RDR |= 0xFF);
+    }
+    if (character == 'r'){
+            My_HAL_GPIO_TogglePin(GPIOC, (GPIO_PIN_7));
+            message = 'Red LED toggled';
+            Transmit_USART3(message);
 
     }
 }
