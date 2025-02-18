@@ -1,6 +1,8 @@
 #include <stm32f0xx_hal.h>
 #include <assert.h>
 #include <main.h>
+#include <hal_gpio.h>
+
 int lab4_main(void) {
     HAL_Init();
     SystemClock_Config();
@@ -10,9 +12,10 @@ int lab4_main(void) {
     GPIO_SPEED_FREQ_LOW,
     GPIO_NOPULL};
     HAL_GPIO_Init(GPIOC, &initStr);
+    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
     USART3_init();
 
-    init_UART3_PC10_PC11(); //PC 10 is TX, PC11 is RX
+    init_UART3_PC10_PC11_PC12(); //PC 10 is TX, PC11 is RX
 
     volatile char message;
     volatile char character;

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stm32f0xx_hal.h>
 #include <stm32f0xx_hal_gpio.h>
+#include <main.h>
 
 void My_HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
 {
@@ -104,16 +105,16 @@ void AF_init_lab3(void){
     //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt}
 
 void init_UART3_PC10_PC11_PC12(void){
-    GPIOA -> MODER |= ((1<<23)|(1<<21)|(1<<25)); //AF mode for PIN10, PIN11 activated
-    GPIOA -> MODER &= ~((1<<22)|(1<<20|(1<<24)));
-    GPIOA -> AFR[1] = 0;
-    GPIOA -> AFR[1] |= ((1<<8)|(1<<12)|(1<<16)); //AF1 for 10,11,12 in AFRH register
+    GPIOC -> MODER |= ((1<<23)|(1<<21)|(1<<25)); //AF mode for PIN10, PIN11, PIN12 activated
+    GPIOC -> MODER &= ~((1<<22)|(1<<20|(1<<24)));
+    GPIOC -> AFR[1] = 0;
+    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)|(1<<16)); //AF1 for 10,11,12 in AFRH register
 
 }
 
-void USART3_int(void){
+void USART3_init(void){
     RCC->APB1ENR |= (1<<18); //Setting USART3 high in RCC reg
-    USART3 -> BRR = 416; //Baud div of 416 with clock of 4.8MHz for 115240
+    USART3 -> BRR = (HAL_RCC_GetHCLKFreq()/115200); //Baud div of 416 with clock of 4.8MHz for 115240
     USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
     USART3 -> CR1 |= 0b1; //enabling USART
 }
