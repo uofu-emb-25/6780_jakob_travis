@@ -11,15 +11,9 @@ int lab4_main(void) {
     GPIO_NOPULL};
     HAL_GPIO_Init(GPIOC, &initStr);
     USART3_init();
-    //My_HAL_GPIO_Init(GPIOC, &initStr);
-    //My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
+
     init_UART3_PC10_PC11(); //PC 10 is TX, PC11 is RX
-    //AF_init_lab3();
-    //TIM2_UEV_Interrupt_Setup();
-    //TIM3_UEV_Setup();
-    //AF_init_lab3();
-    //NVIC_EnableIRQ(TIM2_IRQn);
-    //NVIC_SetPriority(TIM2_IRQn,3);
+
     volatile char message;
     volatile char character;
     //while((USART3->ISR) & (1<<7)){ //while the Transmit Data register is full
@@ -34,9 +28,8 @@ int lab4_main(void) {
             Transmit_USART3(message);
 
     }
-}
-
-void TIM2_IRQHandler(void){
-    My_HAL_GPIO_TogglePin(GPIOC, (GPIO_PIN_8 | GPIO_PIN_9));
-    TIM2->SR &= ~1;
-}
+    else{
+        message = 'Not valid instruction';
+        Transmit_USART3(message);
+    }
+};
