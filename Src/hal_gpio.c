@@ -45,7 +45,7 @@ void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
     GPIOx->ODR ^= GPIO_Pin;
 }
 
-void My_HAL_RCC_GPIOC_CLK_ENABLE(void){
+void My_HAL_RCC_GPIOA_C_CLK_ENABLE(void){
     RCC->AHBENR |= (1<<19);
     RCC->AHBENR |= (1<<17);
 }
@@ -102,3 +102,18 @@ void AF_init_lab3(void){
 
     //SYSCFG->ITLINE16 Timer 2 Interrupt Status Register
     //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt}
+
+void init_UART3_PC10_PC11_PC12(void){
+    GPIOA -> MODER |= ((1<<23)|(1<<21)|(1<<25)); //AF mode for PIN10, PIN11 activated
+    GPIOA -> MODER &= ~((1<<22)|(1<<20|(1<<24)));
+    GPIOA -> AFR[1] = 0;
+    GPIOA -> AFR[1] |= ((1<<8)|(1<<12)|(1<<16)); //AF1 for 10,11,12 in AFRH register
+
+}
+
+void USART3_int(void){
+    RCC->APB1ENR |= (1<<18) //Setting USART3 high in RCC reg
+    USART3 -> BRR = 416; //Baud div of 416 with clock of 4.8MHz for 115240
+    USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
+    USART3 -> CR1 |= 0b1; //enabling USART
+}
