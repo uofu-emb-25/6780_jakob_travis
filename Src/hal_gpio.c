@@ -48,6 +48,7 @@ void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
 void My_HAL_RCC_GPIOA_C_CLK_ENABLE(void){
     RCC->AHBENR |= (1<<19);
+    RCC->AHBENR |= (1<<20);
     RCC->AHBENR |= (1<<17);
 }
 
@@ -104,23 +105,32 @@ void AF_init_lab3(void){
     //SYSCFG->ITLINE16 Timer 2 Interrupt Status Register
     //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt}
 
-void init_UART3_PC10_PC11_PC12(void){
-    GPIOC -> MODER |= ((1<<23)|(1<<21)|(1<<25)); //AF mode for PIN10, PIN11, PIN12 activated
-    GPIOC -> MODER &= ~((1<<22)|(1<<20|(1<<24)));
+void init_UART3_PC10_PC11(void){
+    GPIOC -> MODER |= ((1<<23)|(1<<21)); //AF mode for PIN10, PIN11 activated 10 bits in MODER
+    GPIOC -> MODER &= ~((1<<22)|(1<<20));
     GPIOC -> AFR[1] = 0;
-    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)|(1<<16)); //AF1 for 10,11,12 in AFRH register
+    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
 
+}
+
+void init_UART3_PD8_PD9_PD10(void){
+    
+    GPIOD -> MODER |= ((1<<21)|(1<<19)|(1<<17));
+    GPIOD -> MODER &= ~((1<<20)|(1<<18)|(1<<16));
+    GPIOD -> AFR[0] = 0;
 }
 
 void USART3_init(void){
+    USART3 -> CR1 &= 0;
     RCC->APB1ENR |= (1<<18); //Setting USART3 high in RCC reg
-    USART3 -> BRR = (HAL_RCC_GetHCLKFreq()/115200); //Baud div of 416 with clock of 4.8MHz for 115240
+    USART3 -> BRR = ((HAL_RCC_GetHCLKFreq())/115200); //Baud div of 416 with clock of 4.8MHz for 115240 -- do I have to shift this over 3 bits???
     USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
-    USART3 -> CR1 |= 0b1; //enabling USART
+    //USART3-> CR1 |= (1<<5);
+    USART3 -> CR1 |= 1; //enabling USART
 }
 
-void ASCII_write_USART3(character){
-    USART3->TDR |= (character |= 0xFF);
+void ASCII_write_USART3(int symbol){
+    USART3->TDR |= (symbol |= 0xFF);
 }
 
 void Transmit_USART3(char* string_array){
