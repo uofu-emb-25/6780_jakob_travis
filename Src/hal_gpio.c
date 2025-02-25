@@ -48,7 +48,7 @@ void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
 void My_HAL_RCC_GPIOA_C_CLK_ENABLE(void){
     RCC->AHBENR |= (1<<19);
-    RCC->AHBENR |= (1<<20);
+    //RCC->AHBENR |= (1<<20);
     RCC->AHBENR |= (1<<17);
 }
 
@@ -138,3 +138,7 @@ void Transmit_USART3(char* string_array){
         ASCII_write_USART3(string_array[i]);//writing the character to the transmit register
         };
 };
+
+void My_HAL_RCC_GPIO_BC_CLK_ENABLE(void){
+    RCC->AHBENR |= (RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOCEN);
+}
