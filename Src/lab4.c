@@ -5,28 +5,29 @@
 
 int lab4_main(void) {
     HAL_Init();
-    //SystemClock_Config();
+    SystemClock_Config();
     My_HAL_RCC_GPIOA_C_CLK_ENABLE();
     GPIO_InitTypeDef initStr = {GPIO_PIN_6| GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9,
     GPIO_MODE_OUTPUT_PP,
     GPIO_SPEED_FREQ_LOW,
     GPIO_NOPULL};
     HAL_GPIO_Init(GPIOC, &initStr);
-    GPIO_InitTypeDef initAF = {GPIO_PIN_10 | GPIO_PIN_11,
-                        GPIO_MODE_AF_PP,
-                        GPIO_SPEED_FREQ_LOW,
-                        GPIO_NOPULL,
-                        GPIO_AF1_USART3};
-    HAL_GPIO_Init(GPIOC, &initAF);
+    // GPIO_InitTypeDef initUART = {GPIO_PIN_10 | GPIO_PIN_11,
+    //                     GPIO_MODE_AF_PP,
+    //                     GPIO_SPEED_FREQ_LOW,
+    //                     GPIO_NOPULL,
+    //                     GPIO_AF1_USART3};
+    // HAL_GPIO_Init(GPIOC, &initUART);
     
-    My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
+    //My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
 
-    //init_UART3_PC10_PC11(); //PC 10 is TX, PC11 is RX Boardside
+    init_UART3_PC4_PC5(); //PC 5 is TX, PC4 is RX Boardside
     USART3_init();
-
-    volatile char message;
+//----------------------------------Checkoff 1-------------------------
+    volatile char* message;
     volatile char character;
     //while((USART3->ISR) & (1<<7)){ //while the Transmit Data register is full
+    HAL_Delay(100);
     Transmit_USART3('Hello');
     //}
     while(1){

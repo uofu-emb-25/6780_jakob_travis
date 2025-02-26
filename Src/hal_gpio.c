@@ -106,9 +106,17 @@ void AF_init_lab3(void){
     //Interrupt Vector Table: TIM2 / TIM3 - Global Interrupt}
 
 void init_UART3_PC10_PC11(void){
-    GPIOC -> MODER |= ((1<<23)|(1<<21)); //AF mode for PIN10, PIN11 activated 10 bits in MODER
+    GPIOC -> MODER |= ((1<<23)|(1<<21)); //AF mode for PIN10, PIN11 activated 10 bits in MODER - CLK
     GPIOC -> MODER &= ~((1<<22)|(1<<20));
-    GPIOC -> AFR[1] = 0;
+    GPIOC -> AFR[1] &= ~((0xF<<8)|(0xF<<12));
+    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
+
+}
+
+void init_UART3_PC4_PC5(void){
+    GPIOC -> MODER |= ((1<<9)|(1<<11)); //AF mode for PIN4, PIN5 activated 10 bits in MODER - CLK
+    GPIOC -> MODER &= ~((1<<8)|(1<<10));
+    GPIOC -> AFR[1] &= ~((0xF<<8)|(0xF<<12));
     GPIOC -> AFR[1] |= ((1<<8)|(1<<12)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
 
 }
@@ -121,11 +129,10 @@ void init_UART3_PD8_PD9_PD10(void){
 }
 
 void USART3_init(void){
-    USART3 -> CR1 &= 0;
     RCC->APB1ENR |= (1<<18); //Setting USART3 high in RCC reg
     USART3 -> BRR = ((HAL_RCC_GetHCLKFreq())/115200); //Baud div of 416 with clock of 4.8MHz for 115240 -- do I have to shift this over 3 bits???
     USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
-    //USART3-> CR1 |= (1<<5);
+    USART3-> CR1 |= (1<<5);
     USART3 -> CR1 |= 1; //enabling USART
 }
 
