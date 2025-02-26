@@ -26,23 +26,25 @@ int lab4_main(void) {
 //----------------------------------Checkoff 1-------------------------
     volatile char* message;
     volatile char character;
-    //while((USART3->ISR) & (1<<7)){ //while the Transmit Data register is full
     HAL_Delay(100);
-    Transmit_USART3('Hello');
-    //}
+    Transmit_USART3("Hello");
     while(1){
-        while(USART3->ISR & (1<<5)){ //while the Read Data register is not empty
-            character = (USART3->RDR |= 0xFF);
-        }
-        if (character == 'r'){
-                My_HAL_GPIO_TogglePin(GPIOC, (GPIO_PIN_7));
-                message = 'Red LED toggled';
-                Transmit_USART3(message);
 
-        }
-        else{
-            message = 'Not valid instruction';
-            Transmit_USART3(message);
-        }
-    }
-};
+    };
+}
+//     while(1){
+//         while(USART3->ISR & (1<<5)){ //while the Read Data register is not empty
+//             character = (USART3->RDR |= 0xFF);
+//         }
+//         if (character == 'r'){
+//                 My_HAL_GPIO_TogglePin(GPIOC, (GPIO_PIN_7));
+//                 message = 'Red LED toggled';
+//                 Transmit_USART3(message);
+
+//         }
+//         else{
+//             message = 'Not valid instruction';
+//             Transmit_USART3(message);
+//         }
+//     }
+// };

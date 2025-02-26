@@ -136,15 +136,22 @@ void USART3_init(void){
     USART3 -> CR1 |= 1; //enabling USART
 }
 
-void ASCII_write_USART3(int symbol){
-    USART3->TDR |= (symbol |= 0xFF);
+//void ASCII_write_USART3(char symbol){
+//    USART3->TDR |= (symbol |= 0xFF);
+//}
+
+void Transmit_USART3_helper(char c){
+    while( !(USART3->ISR & (1<<7))){
+    //HAL_Delay(100);
+    }
+    USART3->TDR = c;
 }
 
 void Transmit_USART3(char* string_array){
     for (int i = 0; string_array[i] != '/0'; i++){
-        ASCII_write_USART3(string_array[i]);//writing the character to the transmit register
+        Transmit_USART3_helper(string_array[i]);//writing the character to the transmit register
         };
-};
+}
 
 void My_HAL_RCC_GPIO_BC_CLK_ENABLE(void){
     RCC->AHBENR |= (RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOCEN);
