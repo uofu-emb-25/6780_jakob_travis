@@ -158,15 +158,15 @@ void My_HAL_RCC_GPIO_BC_CLK_ENABLE(void){
 }
 
 void I2C2_Read(uint32_t address, int bytes){
-    I2C2->CR2 &= ~I2C_CR2_RD_WRN; //setting Read bit
+    I2C2->CR2 |= I2C_CR2_RD_WRN; //setting Read bit
     I2C2 -> CR2 |= (1<<13); //starting the bit again -- DO I NEED TO CLEAR IT FIRST?
-    while(~(I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_RXNE)){
+    while(~((I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_RXNE))){
         if (I2C2->ISR & I2C_ISR_NACKF){
-            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); //toggle blue LED if NACKF flag is set...slave did not respond.
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); //toggle red LED if NACKF flag is set...slave did not respond.
             break;
         }
         else{
-            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // toggle pin 6
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // toggle pin 6
             I2C2 -> CR1 |= (1<<2); //enabling RXIE
             if ((I2C2->CR2 & I2C_RXDR_RXDATA) == 0xD4){
                 My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
@@ -180,19 +180,21 @@ void I2C2_Read(uint32_t address, int bytes){
 }
 
 void I2C2_Write(uint32_t address, int bytes){
-    while(~(I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_TXIS)){//if either TXIS or NACKF are not set - stay in while loop
+    while(!((I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_TXIS))){//if either TXIS or NACKF are not set - stay in while loop
         if (I2C2->ISR & I2C_ISR_NACKF){
-            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); //toggle blue LED if NACKF flag is set...slave did not respond.
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); //toggle blue LED if NACKF flag is set...slave did not respond.
             break;
         }
         else{
-            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // toggle pin 6
-            I2C2 -> CR1 |= (1<<1); //enabling TXIE
-            I2C2 -> TXDR |= (I2C2->CR2 & I2C_CR2_SADD); //Writing the WHO AM I address into the Transmit data repo
-            while (~(I2C2->ISR & I2C_ISR_TC)){
-               I2C2_Read(address, bytes);
-               break;
-            }
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); // toggle pin 7
+            I2C2 -> TXDR |= 15; //Writing the WHO AM I address into the Transmit data repo
+            while (!(I2C2->ISR & I2C_ISR_TC)){
+                My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
+                HAL_Delay(20);
+            };
+            I2C2 -> CR2 |= I2C_CR2_STOP;
+            I2C2 -> ICR |= I2C_ICR_STOPCF;
+            break;
         };
     }
 }
