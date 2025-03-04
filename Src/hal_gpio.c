@@ -130,7 +130,7 @@ void init_UART3_PD8_PD9_PD10(void){
 
 void USART3_init(void){
     RCC->APB1ENR |= (1<<18); //Setting USART3 high in RCC reg
-    USART3 -> BRR = ((HAL_RCC_GetHCLKFreq())/115200); //Baud div of 416 with clock of 4.8MHz for 115240 -- do I have to shift this over 3 bits???
+    USART3 -> BRR = ((HAL_RCC_GetHCLKFreq())/115200); //Baud div of 416 with clock of 4.8MHz for 115200 -- do I have to shift this over 3 bits???
     USART3 -> CR1 |= ((1<<2)|(1<<3)); //receiver and transmitter enabled
     USART3-> CR1 |= (1<<5);
     USART3 -> CR1 |= 1; //enabling USART
@@ -141,7 +141,7 @@ void USART3_init(void){
 //}
 
 void Transmit_USART3_helper(char c){
-    while( !(USART3->ISR & (1<<7))){
+    while(!(USART3->ISR & (1<<7))){
     //HAL_Delay(100);
     }
     USART3->TDR = c;
@@ -155,4 +155,44 @@ void Transmit_USART3(char* string_array){
 
 void My_HAL_RCC_GPIO_BC_CLK_ENABLE(void){
     RCC->AHBENR |= (RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOCEN);
+}
+
+void I2C2_Read(uint32_t address, int bytes){
+    I2C2->CR2 &= ~I2C_CR2_RD_WRN; //setting Read bit
+    I2C2 -> CR2 |= (1<<13); //starting the bit again -- DO I NEED TO CLEAR IT FIRST?
+    while(~(I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_RXNE)){
+        if (I2C2->ISR & I2C_ISR_NACKF){
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); //toggle blue LED if NACKF flag is set...slave did not respond.
+            break;
+        }
+        else{
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // toggle pin 6
+            I2C2 -> CR1 |= (1<<2); //enabling RXIE
+            if ((I2C2->CR2 & I2C_RXDR_RXDATA) == 0xD4){
+                My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+                I2C2->CR2 |= (1<<14); //setting stop bit
+                break;
+            }
+
+        };
+    }
+
+}
+
+void I2C2_Write(uint32_t address, int bytes){
+    while(~(I2C2->ISR & I2C_ISR_NACKF)|(I2C2->ISR & I2C_ISR_TXIS)){//if either TXIS or NACKF are not set - stay in while loop
+        if (I2C2->ISR & I2C_ISR_NACKF){
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7); //toggle blue LED if NACKF flag is set...slave did not respond.
+            break;
+        }
+        else{
+            My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6); // toggle pin 6
+            I2C2 -> CR1 |= (1<<1); //enabling TXIE
+            I2C2 -> TXDR |= (I2C2->CR2 & I2C_CR2_SADD); //Writing the WHO AM I address into the Transmit data repo
+            while (~(I2C2->ISR & I2C_ISR_TC)){
+               I2C2_Read(address, bytes);
+               break;
+            }
+        };
+    }
 }

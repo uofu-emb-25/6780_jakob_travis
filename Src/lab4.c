@@ -7,6 +7,7 @@ int lab4_main(void) {
     HAL_Init();
     SystemClock_Config();
     My_HAL_RCC_GPIOA_C_CLK_ENABLE();
+    RCC->APB1ENR |= (1<<18);
     GPIO_InitTypeDef initStr = {GPIO_PIN_6| GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9,
     GPIO_MODE_OUTPUT_PP,
     GPIO_SPEED_FREQ_LOW,
