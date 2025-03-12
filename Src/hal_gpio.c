@@ -114,12 +114,28 @@ void init_UART3_PC10_PC11(void){
 }
 
 void init_UART3_PC4_PC5(void){
-    GPIOC -> MODER |= ((1<<9)|(1<<11)); //AF mode for PIN4, PIN5 activated 10 bits in MODER - CLK
-    GPIOC -> MODER &= ~((1<<8)|(1<<10));
-    GPIOC -> AFR[1] &= ~((0xF<<8)|(0xF<<12));
-    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
+    // GPIOC -> MODER |= ((1<<9)|(1<<11)); //AF mode for PIN4, PIN5 activated 10 bits in MODER - CLK
+    // GPIOC -> MODER &= ~((1<<8)|(1<<10));
+    
+
+    GPIOC->MODER |= 2 << (2*4); // pin 4 is the USART3 receiver in alternate function mode 1
+	GPIOC->MODER &= ~(1<< (2*4) );
+	
+	GPIOC->MODER |= 2 << (2*5); // pin 5 is the USART3 transmitter in alternate function mode 1
+	GPIOC->MODER &= ~(1<< (2*5) );
+
+    GPIOC -> AFR[0] &= ~((0xF<< (4*4) )|(0xF<< (4*5) )); // clear pins 4 and 5
+    GPIOC -> AFR[0] |= 1 << (4*4);
+    GPIOC -> AFR[0] |= 1<< (4*5); // AF1 for both PC4 and PC5
 
 }
+
+// void HAL_ALTERNATE_PIN_Init(GPIO_TypeDef* GPIOx, My_GPIO_InitTypeDef *GPIO_Init) {
+//     int index = (GPIO_Init->PinNumber > 7)? 1 : 0;
+
+//     GPIOx->AFR[index] &= ~(15 << (4*(GPIO_Init->PinNumber))); // Clear the current bits
+//     GPIOx->AFR[index] |= ((GPIO_Init->AlternateFunction) << (4*(GPIO_Init->PinNumber))); // Set the new bits
+// }
 
 void init_UART3_PD8_PD9_PD10(void){
     
@@ -148,7 +164,7 @@ void Transmit_USART3_helper(char c){
 }
 
 void Transmit_USART3(char* string_array){
-    for (int i = 0; string_array[i] != '/0'; i++){
+    for (int i = 0; string_array[i] != '\0'; i++){
         Transmit_USART3_helper(string_array[i]);//writing the character to the transmit register
         };
 }
