@@ -40,28 +40,60 @@ int lab4_main(void) {
     };
 }
 
-void Process_TDR_Part_I(char c) {
-	
-	switch(c) {
-		case '\0':
-			break;
-		case 'r':
-			GPIOC->ODR ^= RED;
-			break;
-		case 'g':
-			GPIOC->ODR ^= GREEN;
-			break;
-		case 'b':
-			GPIOC->ODR ^= BLUE;
-			break;
-		case 'o':
-			GPIOC->ODR ^= ORANGE;
-			break;
-		default:
-			Transmit_USART3("You're only allowed to type one of the 4 colors. Try again nerd.\r\n");
-	}
-	
+void Checkoff_4_2(void) {
+	while(1) {
+		// Display a prompt to the user to get two characters.
+		//Transmit_String("..");
+		
+		// Receive the first character
+		while( !(USART3->ISR & (1<<5) )) {}
+		received_byte = USART3->RDR & 0xFF;
+		Transmit_String("\r\nFirst character is "); Transmit_Char(received_byte);
+		
+		// If it's an accepted letter, save it and receive the second character.
+		if ( received_byte == 'r' || received_byte == 'g' || received_byte == 'b' || received_byte == 'o') {
+			LED_ID = received_byte;
+			
+			// Recieve the second character
+			while( !(USART3->ISR & (1<<5) )) {
+			}
+			received_byte = USART3->RDR & 0xFF;
+			Transmit_String("\r\nSecond character is "); Transmit_Char(received_byte);
+			
+			// If it's a number then perform the corresponding action.
+			if(received_byte >= '0' && received_byte <= '2') {
+				action_ID = received_byte;
+				Process_TDR_Part_II(LED_ID, action_ID);
+				continue;
+			}
+		}
+		// Otherwise the input was invalid. Broadcast an error message and return to the beginning state.
+		Transmit_String("\r\nThat's is not a valid command, Try again."); // Error message for invalid character
+  }
 }
+
+// void Process_TDR_Part_I(char c) {
+	
+// 	switch(c) {
+// 		case '\0':
+// 			break;
+// 		case 'r':
+// 			GPIOC->ODR ^= RED;
+// 			break;
+// 		case 'g':
+// 			GPIOC->ODR ^= GREEN;
+// 			break;
+// 		case 'b':
+// 			GPIOC->ODR ^= BLUE;
+// 			break;
+// 		case 'o':
+// 			GPIOC->ODR ^= ORANGE;
+// 			break;
+// 		default:
+// 			Transmit_USART3("You're only allowed to type one of the 4 colors. Try again nerd.\r\n");
+// 	}
+	
+// }
 
 
 //     while(1){
