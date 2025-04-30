@@ -66,7 +66,7 @@ int lab5_main(void) {
     I2C2 -> CR2 |= (1<<16);//number of bits to transmit =1
     I2C2 -> CR2 &= ~(1<<10); //Master Requests a write transfer
     I2C2 -> CR2 |= (1<<13); //START GENERATION!
-    I2C2 -> 
+    //I2C2 -> 
 
     I2C2_Write(L3addy,1);
     I2C2_Read(L3addy,1);

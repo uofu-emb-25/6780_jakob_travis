@@ -114,10 +114,10 @@ void init_UART3_PC10_PC11(void){
 }
 
 void init_UART3_PC4_PC5(void){
-    GPIOC -> MODER |= ((1<<9)|(1<<11)); //AF mode for PIN4, PIN5 activated 10 bits in MODER - CLK
     GPIOC -> MODER &= ~((1<<8)|(1<<10));
-    GPIOC -> AFR[1] &= ~((0xF<<8)|(0xF<<12));
-    GPIOC -> AFR[1] |= ((1<<8)|(1<<12)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
+    GPIOC -> MODER |= ((1<<9)|(1<<11)); //AF mode for PIN4, PIN5 activated 10 bits in MODER - CLK
+    GPIOC -> AFR[0] &= ~((0xF<<(4*4))|(0xF<<(5*4)));
+    GPIOC -> AFR[0] |= ((1<<16)|(1<<20)); //AF1 for 10,11,12 in AFRH register could also be PD6,PD7,PD8
 
 }
 
